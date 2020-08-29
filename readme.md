@@ -1,3 +1,5 @@
+# Project created by Dr Kyle Feuz at Weber State University and finished by me.
+
 # Ordered Linked List
 
 As we have learned in class, Linked-lists are good for a dynamic collection of
