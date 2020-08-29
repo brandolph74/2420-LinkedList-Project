@@ -1,57 +1,68 @@
-# String Library Part 1
+# Ordered Linked List
 
-C++ has two common ways to represent strings, the string class or a char buffer
-(commonly called c-strings).
-The string class actually stores strings using a char buffer but takes care of
-all of the underlying memory management.
-It also provides several methods for working with and manipulating strings.
-We will be creating are own string class which will call DynamicString.
-DynamicString will store the string using a dynamically-sized character array.
-The last byte of the string should always by the null character '\0' so the
-char buffer is compatible with standard c/c++ code.
-This lets the code detect the end of the string by detecting the null character.
-When implementing the DynamicString class you are **not allowed** to use the
-string header file, cstring header file or C++ strings.
+As we have learned in class, Linked-lists are good for a dynamic collection of
+items where the collection is constantly being added to and removed from.
+In this assignment you will create a linked list class that keeps the items in
+sorted order.  The class will be templated so that is can be used with any of
+the built-in datatypes or a custom class that implements the necessary operators.
+
+We will use several built-in types as well as a custom MemberDO to test the
+OrderedLinkedList implementation.  A MemberDO is an object which could be used
+for tracking Membership in a club like the ACM (Association of Computing Machinery)
+and tracking how much money each member currently owes for their dues.
+The information for each Member includes an Identification Number, Last Name,
+First Initial, and Yearly Dues.
 
 ## Goals:
-The purpose of this project is to review topics covered in CS 1410 especially
-classes, arrays, pointers, loops, and operator overloading.
-This assignment will also introduce the tools and methodologies we will be using
-throughout the rest of the semester.
+The purpose of this project is to continue working with C++ classes,
+practice working with templates, and understand and implement the concepts of a
+linked list data structure.
 
 ## Requirements:
+Code construction can be divided into two primary tasks:
 
-Implement the following string methods
+### 1. **Ordered Linked List class**
 
-+ DynamicString() //Constructs an empty string. Allocating enough memory to store the null character
-+ DynamicString(const char* str) //Constructs a string by copying the characters from the char array str to this object.  You should dynamically allocate enough memory for the entire string.
-+ int len() const //returns the length of this string (i.e. the number of characters in the array not including the null char)
-+ const char* c_str() const // returns a pointer to the underlying char array
-+ char char_at(int position) const // returns the char at the specified position
-+ char& operator[](int position) // returns the char at the specified position
-+ bool startsWith(const DynamicString& other) const //True if other is a prefix of this string
-+ bool endsWith(const DynamicString& other) const //True if other is a suffix of this string
-+ int compare(const DynamicString& other) const // negative if this is smaller than other, 0 if this is equal to other, positive if this is larger than other
-+ int iCompare(const DynamicString& other) const // same as compare but is case-insensetive
-+ DynamicString& toLower() // converts the string to lowercase
-+ DynamicString& toUpper() // converts the string to uppercase
-+ DynamicString& replace(char old, char new) //replace all instances of old with new
-+ int find(char needle, int start=0) const //return the first index of the specified char or -1 if the char is not found starting from index start.
-+ int reverseFind(char needle, int start) const //return the right-most index (less than or equal to start) of the specified char or -1 if the char is not found.
+This class creates and manages the ordered linked list using template syntax.
+The list should rely upon the templated class having implemented the "<" and "=="
+operators.  The use of these operators is described below. When items are inserted
+into the list they are inserted in "sorted order" as defined by the "<" operator.
+Items are retreived by their position in the list.  Their position in the list
+can be determined using the find method which uses the "==" operator to determine
+if the current item is the item being found.  Similarly the remove method finds
+the first occurrence of the item as defined by the "==" operator and removes it
+from the list. Finally the "<<" operator should call the "<<" operator on the item
+being stored in the list and add additional formating described below.
+
+At a minimum you must implement the following public methods:
+
++ OrderedLinkedList(); initializes the list to an empty state.
++ OrderedLinkedList(const OrderedLinkedList& other); creates a deep-copy of the other list.
++ OrderedLinkedList<Type>& operator=(const OrderedLinkedList<Type>& other); creates a deep-copy of the other list and cleans up any previously used memory.
++ ~OrderedLinkedList(); cleans up any previously used memory.
++ int size() const; returns the current number of items in the list.
++ bool empty() const; returns true if the list is currently empty (i.e. the size is 0)
++ Type get(int pos) const; returns the item at the specified position in the list. Throws an out_of_range_exception if the pos is outside the bounds of the list.
++ Type getFirst() const; returns the first item in the list. Throws an out_of_range exception if the list is empty
++ Type getLast() const; returns the last item in the list. Throws an out_of_range exception if the list is empty
++ void insert(const Type&); inserts the item into the list in the correct order.
++ int find(const Type&) const; returns the position of the item in the list if it is found or -1 if the item is not in the list.  Use the "==" operator to determine if the item is the one being found.
++ void remove(const Type&); Removes the item from the list.  If the item is not in the list this method has no effect.  Use the "==" operator to determine if the item is the one to be removed.
++ void clear(); deletes the entire list and resets it to an empty state.
++ OrderedLinkedList<Type> everyOtherOdd(); returns a new list that contains every other item in the list starting with the first item (index 0).
++ OrderedLinkedList<Type> everyOtherEven(); returns a new list that contains every other item in the list starting with the second item (index 1).
++ friend std::ostream& operator<< <>(std::ostream&, const OrderedLinkedList<Type>& list); Outputs the items in the list formated as item1->item2->...->itemn.  For example. if the list is 1,2,3,4. This method outputs 1->2->3->4
 
 
-Helpful C++ library methods:
-
-+ tolower
-+ toupper
-+ out_of_range
+**As noted in the above specifications, the ordered linked list methods should be implemented such that any class which implements the "<", "==", and "<<" operators can be used.**
 
 
-## Tips and suggestions:
-- C-strings always end with the null character. So should your DynamicString.
-- Get started early.
-- Look at the driver file. Just because you will not be making changes to that code, you should still understand what it is doing. The tests are examples of expected results for each of the different methods. If you want to know what concat is supposed to do, look at the input and expected output.
-- Read the comments in the header files.  They describe what each method is meant to do.
-- Work on one thing at a time and compile and commit early and often.  For example, implement the len method, compile it, test it, commit it.  The more often you compile and test the easier it will be to pinpoint errors.
-- Use the debugger.  When you are getting unexpected results, set a breakpoint and trace exactly what is happening in the code.
-- Ask for help.  Use the tutors, canvas dicussion boards and me.  Be detailed and descriptive of what problem you are having and how you have tried to solve it. When you ask me for help make sure your latest code is in your git repository.
+### 2. **MemberDO class**
+
+Most of the MemberDO class has been implemented for you as it was just simple
+getters and setters.  However, you will need to implement any necessary operators
+for the class to be used in the OrderedLinkedList.  Specifically, you should use
+the "key" value when comparing and printing MemberDO objects.
+
+The key represents the unique ID number of the club member and will be used exclusively to locate nodes in the implementation of the linked list methods.
+
